@@ -251,16 +251,17 @@ function addEmpl() {
 
 function updateEmpR() {
     console.log('update an employee role')
-    connection.query('select * from employee', function (err, results) {
-        console.log('all the employee', err, results)
+   
+ connection.query('select * from employee', function (err, answers) {
+      console.log('all the employee', err, answers)
 
         var newArray = []
-        for (let i = 0; i < results.length; i++) {
+        for (let i = 0; i < answers.length; i++) {
             var obj = {
-                first_name: results[i].first_name,
-                last_name: results[i].last_name,
-                role_id: results[i].role_id,
-                
+                first_name:answers[i].first_name,
+                last_name: answers[i].last_name,
+                role_id: answers[i].role_id
+
             }
             newArray.push(obj)
 
@@ -268,91 +269,42 @@ function updateEmpR() {
         console.log('newArray', newArray)
         inquirer.prompt([
             {
-                type: 'list',
-                name: 'first_name',
-                message: "what is your first_name?",
+                type: "list",
+                name: "first_name",
+                message: "Which Employee do you want to update?",
                 choices: newArray
+
+            },
+            {
+
+                type: "list",
+                name: "last_name",
+                message: "Which Employee do you want to update?",
+                choices: newArray
+
+
+            },
+            {
+                type: 'type',
+                name: "role_id",
+                message: 'what is the employee role?',
+                choices: newArray
+
             },
 
-            {
-                type: 'list',
-                name: 'last_name',
-                message: "what is your last_name?",
-                choices: newArray
-            },
-            {
-                type: 'input',
-                name: 'role_id',
-                message: "what is your role_id"
-            },
-       
+
         ]).then(function (answers) {
+            
             console.log('inside then add employee', answers)
 
-            connection.query('INSERT INTO employee (first_name, last_name ,role_id) VALUES(?,?,?)',
-                [answers.first_name, answers.last_name, answers.role_id],
-                function (err, result) {
-                    console.log('we did it', result)
+            connection.query('INSERT INTO employee (first_name, last_name,role_id) VALUES(?,?,?)',
+                [answers.first_name, answers.last_name,answers.role_id],
+                function (err, answers) {
+                    console.log('we did it', answers)
                     chooseRequest()
 
                 })
 
         })
     })
-}
-//  connection.query('select * from employee', function (err, answers) {
-//       console.log('all the employee', err, answers)
-
-//         var newArray = []
-//         for (let i = 0; i < answers.length; i++) {
-//             var obj = {
-//                 first_name:answers[i].first_name,
-//                 last_name: answers[i].last_name,
-//                 role_id: answers[i].role_id
-
-//             }
-//             newArray.push(obj)
-
-//         }
-//         console.log('newArray', newArray)
-//         inquirer.prompt([
-//             {
-//                 type: "list",
-//                 name: "first_name",
-//                 message: "Which Employee do you want to update?",
-//                 choices: newArray
-
-//             },
-//             {
-
-//                 type: "list",
-//                 name: "last_name",
-//                 message: "Which Employee do you want to update?",
-//                 choices: newArray
-
-
-//             },
-//             {
-//                 type: 'type',
-//                 name: "role_id",
-//                 message: 'what is the employee role?',
-//                 choices: newArray
-
-//             },
-
-
-//         ]).then(function (answers) {
-            
-//             console.log('inside then add employee', answers)
-
-//             connection.query('INSERT INTO employee (first_name, last_name,role_id) VALUES(?,?,?)',
-//                 [answers.first_name, answers.last_name,answers.role_id],
-//                 function (err, answers) {
-//                     console.log('we did it', answers)
-//                     chooseRequest()
-
-//                 })
-
-//         })
-//     })
-//     }
+    }
