@@ -159,39 +159,39 @@ function addDept() {
     console.log('add a department')
     //connection.query('select * from department', function (err, answers) {
 
-        // var newArray = []
-        // for (let i = 0; i < answers.length; i++) {
-        //     var obj = {
-        //         value: answers[i].id,
-        //         name: answers[i].name
-        //     }
-        //     newArray.push(obj)
+    // var newArray = []
+    // for (let i = 0; i < answers.length; i++) {
+    //     var obj = {
+    //         value: answers[i].id,
+    //         name: answers[i].name
+    //     }
+    //     newArray.push(obj)
 
-        // }
-        
-        inquirer.prompt([
-          
+    // }
 
-            {
-                type: 'input',
-                name: 'name',
-                message: "what is your name of department?"
-            },
+    inquirer.prompt([
 
-        ]).then(function (answers) {
-            console.log('inside then add department', answers)
 
-            connection.query('INSERT INTO department (name) VALUES (?)',
-                [ answers.name],
-                function (err, results) {
-                    console.log('ERRR!!!', err)
-                    console.log('we did it', results)
-                    chooseRequest()
+        {
+            type: 'input',
+            name: 'name',
+            message: "what is your name of department?"
+        },
 
-                })
+    ]).then(function (answers) {
+        console.log('inside then add department', answers)
 
-        })
-   // })
+        connection.query('INSERT INTO department (name) VALUES (?)',
+            [answers.name],
+            function (err, results) {
+                console.log('ERRR!!!', err)
+                console.log('we did it', results)
+                chooseRequest()
+
+            })
+
+    })
+    // })
 
 };
 function addEmpl() {
@@ -251,4 +251,108 @@ function addEmpl() {
 
 function updateEmpR() {
     console.log('update an employee role')
-};
+    connection.query('select * from employee', function (err, results) {
+        console.log('all the employee', err, results)
+
+        var newArray = []
+        for (let i = 0; i < results.length; i++) {
+            var obj = {
+                first_name: results[i].first_name,
+                last_name: results[i].last_name,
+                role_id: results[i].role_id,
+                
+            }
+            newArray.push(obj)
+
+        }
+        console.log('newArray', newArray)
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'first_name',
+                message: "what is your first_name?",
+                choices: newArray
+            },
+
+            {
+                type: 'list',
+                name: 'last_name',
+                message: "what is your last_name?",
+                choices: newArray
+            },
+            {
+                type: 'input',
+                name: 'role_id',
+                message: "what is your role_id"
+            },
+       
+        ]).then(function (answers) {
+            console.log('inside then add employee', answers)
+
+            connection.query('INSERT INTO employee (first_name, last_name ,role_id) VALUES(?,?,?)',
+                [answers.first_name, answers.last_name, answers.role_id],
+                function (err, result) {
+                    console.log('we did it', result)
+                    chooseRequest()
+
+                })
+
+        })
+    })
+}
+//  connection.query('select * from employee', function (err, answers) {
+//       console.log('all the employee', err, answers)
+
+//         var newArray = []
+//         for (let i = 0; i < answers.length; i++) {
+//             var obj = {
+//                 first_name:answers[i].first_name,
+//                 last_name: answers[i].last_name,
+//                 role_id: answers[i].role_id
+
+//             }
+//             newArray.push(obj)
+
+//         }
+//         console.log('newArray', newArray)
+//         inquirer.prompt([
+//             {
+//                 type: "list",
+//                 name: "first_name",
+//                 message: "Which Employee do you want to update?",
+//                 choices: newArray
+
+//             },
+//             {
+
+//                 type: "list",
+//                 name: "last_name",
+//                 message: "Which Employee do you want to update?",
+//                 choices: newArray
+
+
+//             },
+//             {
+//                 type: 'type',
+//                 name: "role_id",
+//                 message: 'what is the employee role?',
+//                 choices: newArray
+
+//             },
+
+
+//         ]).then(function (answers) {
+            
+//             console.log('inside then add employee', answers)
+
+//             connection.query('INSERT INTO employee (first_name, last_name,role_id) VALUES(?,?,?)',
+//                 [answers.first_name, answers.last_name,answers.role_id],
+//                 function (err, answers) {
+//                     console.log('we did it', answers)
+//                     chooseRequest()
+
+//                 })
+
+//         })
+//     })
+//     }
