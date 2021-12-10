@@ -1,30 +1,32 @@
-create database employeeTrack_db;
+drop database if exists employeetrack_db;
+create database employeetrack_db;
 
-use employeeTrack_db;
+use employeetrack_db;
 
-CREATE TABLE departement (
-  id INT NOT NULL,
+CREATE TABLE department (
+  id INT NOT NULL auto_increment,
   name VARCHAR(30),
   PRIMARY KEY (id)
 );
 
 CREATE TABLE role (
-  id INT not NULL AUTO_INCREMENT,
-  title VARCHAR(30) NOT NULL,
+  id INT not NULL auto_increment ,
+  title VARCHAR(30) NOT NULL ,
   salary Decimal,
-  departement_id INT,
-  FOREIGN KEY (departement_id)
-  REFERENCES departement(id)
-  ON DELETE SET NULL
+  department_id INT,
+  PRIMARY KEY (id),
+  FOREIGN KEY (department_id)
+  REFERENCES department(id)
+ 
 );
 
 CREATE TABLE employee (
-  id INT,
-  first_name VARCHAR(30) NOT NULL,
-  last_name VARCHAR(30) NOT NULL,
-  role_id INT,
+  id INT not NULL auto_increment,
+  first_name VARCHAR(30) ,
+  last_name VARCHAR(30) ,
+  role_id varchar(50),
   manager_id INT,
-  FOREIGN KEY (role_id)
-  REFERENCES role(id)
-  ON DELETE SET NULL
+  primary key(id)
+
+  
 );
