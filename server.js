@@ -1,5 +1,7 @@
 const inquirer = require('inquirer');
 var mysql = require('mysql');
+
+var mysql = require('mysql2');
 const { onErrorResumeNext } = require('rxjs/operators');
 
 var connection = mysql.createConnection({
@@ -69,16 +71,17 @@ function viewDepts() {
     console.log('view all departments')
     connection.query('select * from department', function (err, results) {
         console.log('all the departments', err, results)
+        console.table(results)
 
-        var newArray = []
-        for (let i = 0; i < results.length; i++) {
-            var obj = {
-                name: results[i].name,
-                value: results[i].id
-            }
-            newArray.push(obj)
+        // var newArray = []
+        // for (let i = 0; i < results.length; i++) {
+        //     var obj = {
+        //         name: results[i].name,
+        //         value: results[i].id
+        //     }
+        //     newArray.push(obj)
 
-        }
+        // }
         chooseRequest()
     });
 
@@ -88,6 +91,7 @@ function viewRoles() {
     console.log('view all roles')
     connection.query('select * from role', function (err, results) {
         console.log('all the role', err, results)
+        console.table(results)
 
         chooseRequest()
     });
@@ -99,6 +103,7 @@ function viewEmployees() {
 
     connection.query('select * from employee', function (err, results) {
         console.log('all the employee', err, results)
+        console.table(results)
 
         chooseRequest()
     });
@@ -142,11 +147,13 @@ function addRole() {
         ]).then(function (answers) {
             console.log('inside then add role', answers)
 
+
             connection.query('INSERT INTO role (title, salary,department_id) VALUES(?,?,?)',
                 [answers.title, answers.salary, answers.department_id],
                 function (err, answers) {
                     console.log('ERRR!!!', err)
                     console.log('we did it', answers)
+                    console.table(answers)
                     chooseRequest()
 
                 })
@@ -186,6 +193,7 @@ function addDept() {
             function (err, results) {
                 console.log('ERRR!!!', err)
                 console.log('we did it', results)
+                console.table(results)
                 chooseRequest()
 
             })
@@ -241,6 +249,7 @@ function addEmpl() {
                 [answers.first_name, answers.last_name, answers.role_id, answers.manager_id],
                 function (err, result) {
                     console.log('we did it', result)
+                    console.table(result)
                     chooseRequest()
 
                 })
@@ -250,61 +259,62 @@ function addEmpl() {
 };
 
 function updateEmpR() {
-    console.log('update an employee role')
-   
- connection.query('select * from employee', function (err, answers) {
-      console.log('all the employee', err, answers)
-
-        var newArray = []
-        for (let i = 0; i < answers.length; i++) {
+    connection.query('select * from employee', function (err, allEmployees) {
+        var employeeChoices=[]
+        for (let i = 0; i < allEmployees.length; i++) {
             var obj = {
-                first_name:answers[i].first_name,
-                last_name: answers[i].last_name,
-                role_id: answers[i].role_id
-
+                name:`${allEmployees[i].first_name} ${allEmployees[i].last_name}`,
+                value:allEmployees[i].id
             }
-            newArray.push(obj)
-
+            employeeChoices.push(obj)
         }
-        console.log('newArray', newArray)
         inquirer.prompt([
             {
                 type: "list",
-                name: "first_name",
+                name: "employee_id",
                 message: "Which Employee do you want to update?",
-                choices: newArray
+                choices: employeeChoices
+            }
+        ]).then(function (answers) {   
+    let employee_id = answers.employee_id;
 
-            },
+    connection.query('select * from role', function (err, answers) {
+        var newRole=[]
+        for (let i = 0; i < answers.length; i++) {
+            var obj = {
+                name:answers[i].title,
+                value: answers[i].id
+            }
+            newRole.push(obj)
+
+        }
+        inquirer.prompt([
             {
-
                 type: "list",
-                name: "last_name",
-                message: "Which Employee do you want to update?",
-                choices: newArray
-
-
-            },
-            {
-                type: 'type',
                 name: "role_id",
-                message: 'what is the employee role?',
-                choices: newArray
-
-            },
-
-
+                message: "which role do you want to assign?",
+                choices: newRole
+            }
         ]).then(function (answers) {
-            
-            console.log('inside then add employee', answers)
-
-            connection.query('INSERT INTO employee (first_name, last_name,role_id) VALUES(?,?,?)',
-                [answers.first_name, answers.last_name,answers.role_id],
-                function (err, answers) {
+            //connection.query('INSERT INTO employee (name,role_id) VALUES(?,?)',
+            connection.query('UPDATE employee SET role_id = ? WHERE id = ?;',   
+            [ answers.role_id, employee_id],
+                 (err, answers) =>{
+                     console.log('err',err)
                     console.log('we did it', answers)
+                    console.table(answers)
+                    console.table(answers)
                     chooseRequest()
 
                 })
 
         })
-    })
-    }
+    });
+
+    });
+
+})
+}
+
+    
+        
