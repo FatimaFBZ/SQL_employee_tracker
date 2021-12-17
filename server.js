@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 var mysql = require('mysql');
+var welcome = require('asciiart-logo')
 
 var mysql = require('mysql2');
 const { onErrorResumeNext } = require('rxjs/operators');
@@ -14,7 +15,8 @@ var connection = mysql.createConnection({
 
 
 function chooseRequest() {
-
+var welcome1= welcome({name:'start'}).render()
+console.log(welcome1)
     inquirer.prompt([
         {
             type: 'list',
